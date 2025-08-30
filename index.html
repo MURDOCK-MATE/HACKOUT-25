@@ -1,174 +1,427 @@
 <!DOCTYPE html>
-<html lang="en" data-app="mangrove-watch">
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Mangrove Watch – Report & Protect</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css"/>
-
-  <!-- Leaflet -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-
-  <script defer src="app.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mangrove Watch - Protecting Our Coastal Ecosystems</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌿</text></svg>">
 </head>
-<body data-role="citizen">
-  <!-- 3D Loader -->
-  <div id="loader" aria-hidden="true">
-    <div class="loader-wrap">
-      <div class="orb">
-        <div class="ring r1"></div>
-        <div class="ring r2"></div>
-        <div class="ring r3"></div>
-        <div class="seedling">
-          <svg viewBox="0 0 120 120" aria-label="Mangrove sprout">
-            <path d="M60 85 C60 65, 60 55, 60 40" class="sprout-stem"/>
-            <path d="M60 62 C40 52, 38 38, 48 30 C55 24, 65 26, 69 36 C72 44, 66 56, 60 62Z" class="sprout-leaf-l"/>
-            <path d="M60 62 C80 52, 82 38, 72 30 C65 24, 55 26, 51 36 C48 44, 54 56, 60 62Z" class="sprout-leaf-r"/>
-          </svg>
+<body>
+    <!-- Enhanced Animated Background -->
+    <div class="bg-animation">
+        <div class="wave wave1"></div>
+        <div class="wave wave2"></div>
+        <div class="wave wave3"></div>
+        <div class="floating-elements">
+            <div class="leaf leaf1">🌿</div>
+            <div class="leaf leaf2">🍃</div>
+            <div class="leaf leaf3">🌱</div>
+            <div class="leaf leaf4">🌿</div>
+            <div class="leaf leaf5">🍃</div>
         </div>
-      </div>
-      <h1 class="loader-title">Mangrove Watch</h1>
-      <p class="loader-subtitle">Crowd-powered protection for coastal ecosystems</p>
     </div>
-  </div>
-
-  <!-- Topbar -->
-  <nav class="topbar">
-    <div class="brand">
-      <div class="brand-icon">🪴</div>
-      <div>
-        <div class="brand-title">Mangrove Watch</div>
-        <div class="brand-tag">Report • Verify • Act</div>
-      </div>
-    </div>
-    <div class="top-actions">
-      <button id="btnOpenAuthority" class="btn ghost" onclick="MW.openAuthority()">Authority Console</button>
-      <button id="btnMyReports" class="btn ghost" onclick="MW.scrollTo('#myReports')">My Reports</button>
-      <button id="btnLeaderboard" class="btn ghost" onclick="MW.scrollTo('#leaderboard')">Leaderboard</button>
-    </div>
-  </nav>
-
-  <!-- Hero -->
-  <header class="hero">
-    <div class="hero-content">
-      <h2><span class="accent">Protect</span> Mangroves with your camera.</h2>
-      <p>See illegal cutting, dumping, or fire? Submit a geotagged report with a photo and description. Your report notifies authorities instantly and earns you points on the community leaderboard.</p>
-      <div class="hero-cta">
-        <a href="#report" class="btn primary">Report Incident</a>
-        <a href="#learn" class="btn flat">Learn how it works</a>
-      </div>
-    </div>
-    <div id="heroCanvas" class="hero-canvas" aria-hidden="true"></div>
-  </header>
-
-  <!-- Report Form -->
-  <main id="report" class="shell">
-    <section class="panel">
-      <div class="panel-header">
-        <h3>Submit a Report</h3>
-        <p class="muted">All fields help us validate and act faster. Photos are strongly recommended.</p>
-      </div>
-
-      <form id="reportForm" class="grid-2" autocomplete="on">
-        <div class="field">
-          <label for="reporterName">Your name (for leaderboard)</label>
-          <input id="reporterName" name="reporterName" placeholder="e.g., Dhruv Patel" required/>
-        </div>
-
-        <div class="field">
-          <label for="incidentType">Incident type</label>
-          <select id="incidentType" name="incidentType" required>
-            <option value="">Select one</option>
-            <option>Illegal cutting</option>
-            <option>Solid waste dumping</option>
-            <option>Sewage / chemical discharge</option>
-            <option>Fire / burning</option>
-            <option>Encroachment / land filling</option>
-            <option>Other</option>
-          </select>
-        </div>
-
-        <div class="field col-span-2">
-          <label for="description">Short description</label>
-          <textarea id="description" name="description" rows="3" placeholder="What happened? Any identifying details..." required></textarea>
-        </div>
-
-        <div class="field">
-          <label for="photo">Photo evidence</label>
-          <input id="photo" name="photo" type="file" accept="image/*;capture=camera"/>
-          <small class="muted">EXIF data (if present) is ignored in this demo.</small>
-          <div id="photoPreview" class="photo-preview"></div>
-        </div>
-
-        <div class="field">
-          <label>Location</label>
-          <div class="stack-s">
-            <input id="locationText" placeholder="Type a place (village, creek, landmark)"/>
-            <div class="row">
-              <button type="button" class="btn" onclick="MW.useGeocoding()">Convert to coordinates</button>
-              <button type="button" class="btn outline" onclick="MW.useMyLocation()">Use my current location</button>
+    
+    <!-- Enhanced Loader -->
+    <div class="loader" id="loader">
+        <div class="loader-content">
+            <div class="logo-container">
+                <div class="logo-circle">
+                    <div class="logo-inner">
+                        <i class="fas fa-seedling"></i>
+                    </div>
+                    <div class="logo-ring"></div>
+                    <div class="logo-pulse"></div>
+                </div>
             </div>
-            <div class="row small">
-              <div class="field-inline"><label>Lat</label><input id="lat" inputmode="decimal" placeholder="--" required/></div>
-              <div class="field-inline"><label>Lng</label><input id="lng" inputmode="decimal" placeholder="--" required/></div>
+            <h1 class="brand-heading">Mangrove Watch</h1>
+            <p class="tagline">Protecting Coastal Ecosystems</p>
+            <div class="loading-bar">
+                <div class="loading-progress"></div>
             </div>
-          </div>
+            <p class="loading-text">Initializing ecosystem protection platform...</p>
         </div>
+    </div>
 
-        <div class="field col-span-2">
-          <label>Map (draggable marker)</label>
-          <div id="map" class="map"></div>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="#" class="logo" onclick="showPage('home')">
+                <div class="logo-nav">
+                    <i class="fas fa-seedling"></i>
+                    <span>Mangrove Watch</span>
+                </div>
+            </a>
+            
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="#" class="nav-link active" onclick="showPage('home')" data-page="home">
+                    <i class="fas fa-home"></i>Dashboard
+                </a></li>
+                <li><a href="#" class="nav-link" onclick="showPage('report')" data-page="report">
+                    <i class="fas fa-exclamation-triangle"></i>Report
+                </a></li>
+                <li><a href="#" class="nav-link" onclick="showPage('leaderboard')" data-page="leaderboard">
+                    <i class="fas fa-trophy"></i>Leaderboard
+                </a></li>
+                <li><a href="#" class="nav-link" onclick="showPage('myreports')" data-page="myreports">
+                    <i class="fas fa-file-alt"></i>My Reports
+                </a></li>
+                <li><a href="#" class="nav-link" onclick="showPage('authority-login')" data-page="authority-login">
+                    <i class="fas fa-shield-alt"></i>Authority
+                </a></li>
+            </ul>
+            
+            <button class="mobile-menu-toggle" id="mobileToggle">
+                <i class="fas fa-bars"></i>
+            </button>
         </div>
+    </nav>
 
-        <div class="actions col-span-2">
-          <button class="btn primary" type="submit">Submit Report</button>
-          <button class="btn ghost" type="reset">Reset</button>
+    <!-- Home Page -->
+    <div id="home-page" class="page">
+        <section class="hero">
+            <div class="hero-content">
+                <h1>Protecting Mangrove Ecosystems</h1>
+                <p class="hero-subtitle">Join our community-driven platform to monitor, report, and preserve these vital coastal guardians that protect our planet's biodiversity and climate.</p>
+                
+                <div class="hero-stats">
+                    <div class="stat">
+                        <span class="stat-number" id="totalReports">0</span>
+                        <span class="stat-label">Reports Submitted</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number" id="resolvedPercentage">0%</span>
+                        <span class="stat-label">Cases Resolved</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number">1,200+</span>
+                        <span class="stat-label">Hectares Protected</span>
+                    </div>
+                </div>
+
+                <div class="hero-actions">
+                    <a href="#" class="btn btn-primary" onclick="showPage('report')">
+                        <i class="fas fa-plus"></i>Report Incident
+                    </a>
+                    <a href="#" class="btn btn-outline" onclick="showPage('leaderboard')">
+                        <i class="fas fa-trophy"></i>View Leaderboard
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="container">
+                <h2 class="section-title">Why Mangroves Matter</h2>
+                <div class="card-grid">
+                    <div class="card">
+                        <div class="card-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <h3>Coastal Protection</h3>
+                        <p>Mangroves act as natural barriers, protecting coastlines from storms, tsunamis, and erosion while reducing flood risks for millions of people.</p>
+                        <ul class="feature-list">
+                            <li>• Reduce wave energy by up to 70%</li>
+                            <li>• Prevent coastal erosion naturally</li>
+                            <li>• Buffer against storm surges</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <div class="card-icon">
+                            <i class="fas fa-leaf"></i>
+                        </div>
+                        <h3>Carbon Storage</h3>
+                        <p>These ecosystems store 3-5 times more carbon than tropical rainforests, making them crucial allies in fighting climate change.</p>
+                        <ul class="feature-list">
+                            <li>• Store up to 10x more carbon per hectare</li>
+                            <li>• Sequester carbon for centuries</li>
+                            <li>• Help mitigate climate change</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <div class="card-icon">
+                            <i class="fas fa-fish"></i>
+                        </div>
+                        <h3>Marine Nurseries</h3>
+                        <p>Over 80% of global fish species depend on mangrove ecosystems for breeding, feeding, and shelter during critical life stages.</p>
+                        <ul class="feature-list">
+                            <li>• Support 80% of global fisheries</li>
+                            <li>• Provide nursery habitats</li>
+                            <li>• Maintain biodiversity</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Report Page -->
+    <div id="report-page" class="page hidden">
+        <div class="page-content">
+            <div class="container">
+                <h2 class="section-title">Report an Incident</h2>
+                <div class="form-container">
+                    <form id="reportForm">
+                        <div class="form-group">
+                            <label for="reporterName">Your Name *</label>
+                            <input type="text" id="reporterName" class="form-control" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="incidentType">Incident Type *</label>
+                            <select id="incidentType" class="form-control" required>
+                                <option value="">Select incident type</option>
+                                <option value="Illegal cutting">Illegal Cutting/Logging</option>
+                                <option value="Dumping">Illegal Dumping</option>
+                                <option value="Fire">Fire/Burning</option>
+                                <option value="Pollution">Water Pollution</option>
+                                <option value="Development">Unauthorized Development</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="description">Description *</label>
+                            <textarea id="description" class="form-control" rows="4" placeholder="Please provide detailed information about the incident..." required></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="photo">Photo Evidence</label>
+                            <input type="file" id="photo" class="form-control" accept="image/*">
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="lat">Latitude *</label>
+                                <input type="number" id="lat" class="form-control" step="any" placeholder="e.g., 23.0225" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="lng">Longitude *</label>
+                                <input type="number" id="lng" class="form-control" step="any" placeholder="e.g., 72.5714" required>
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary" style="width: 100%;">
+                            <i class="fas fa-paper-plane"></i>Submit Report
+                        </button>
+                    </form>
+                </div>
+            </div>
         </div>
-      </form>
-    </section>
+    </div>
 
-    <!-- My Reports -->
-    <section id="myReports" class="panel">
-      <div class="panel-header">
-        <h3>My Reports</h3>
-        <p class="muted">Track statuses in real time as the authority updates cases.</p>
-      </div>
-      <div id="myReportsList" class="cards"></div>
-    </section>
+    <!-- Leaderboard Page -->
+    <div id="leaderboard-page" class="page hidden">
+        <div class="page-content">
+            <div class="container">
+                <h2 class="section-title">Community Leaderboard</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <i class="fas fa-users"></i>
+                        <div class="stat-value" id="activeReporters">0</div>
+                        <div class="stat-title">Active Reporters</div>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-calendar-week"></i>
+                        <div class="stat-value" id="thisWeek">0</div>
+                        <div class="stat-title">Reports This Week</div>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-award"></i>
+                        <div class="stat-value" id="topScore">0</div>
+                        <div class="stat-title">Highest Score</div>
+                    </div>
+                </div>
+                
+                <div class="table-container">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Rank</th>
+                                <th>Reporter</th>
+                                <th>Reports</th>
+                                <th>Score</th>
+                                <th>Badge</th>
+                            </tr>
+                        </thead>
+                        <tbody id="leaderboardTable">
+                            <tr>
+                                <td colspan="5" style="text-align: center; padding: 3rem; color: var(--text-muted);">
+                                    <i class="fas fa-trophy" style="font-size: 3rem; margin-bottom: 1rem; display: block;"></i>
+                                    No reports submitted yet. Be the first to report an incident!
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
 
-    <!-- Leaderboard -->
-    <section id="leaderboard" class="panel">
-      <div class="panel-header">
-        <h3>Community Leaderboard</h3>
-        <p class="muted">Earn 10 pts per report, +5 with photo, +5 if your report leads to action.</p>
-      </div>
-      <div id="leaderboardList" class="table"></div>
-    </section>
+    <!-- My Reports Page -->
+    <div id="myreports-page" class="page hidden">
+        <div class="page-content">
+            <div class="container">
+                <h2 class="section-title">My Reports</h2>
+                <div id="myReportsContainer">
+                    <div class="card">
+                        <div style="text-align: center; padding: 2rem;">
+                            <i class="fas fa-file-alt" style="font-size: 3rem; color: var(--text-muted); margin-bottom: 1rem;"></i>
+                            <h3>No Reports Yet</h3>
+                            <p style="color: var(--text-muted); margin-bottom: 2rem;">You haven't submitted any reports yet. Help protect our mangroves by reporting incidents.</p>
+                            <a href="#" class="btn btn-primary" onclick="showPage('report')">
+                                <i class="fas fa-plus"></i>Submit First Report
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-    <!-- How it works -->
-    <section id="learn" class="panel">
-      <div class="panel-header">
-        <h3>How it Works</h3>
-      </div>
-      <ol class="steps">
-        <li><strong>Report:</strong> Submit photo, details, and exact location.</li>
-        <li><strong>Validate:</strong> Automated checks + authority verification reduce false alarms.</li>
-        <li><strong>Act:</strong> Authority assigns and updates status: Acknowledged → In-Progress → Resolved.</li>
-        <li><strong>Reward:</strong> Your score increases as your reports help protect mangroves.</li>
-      </ol>
-    </section>
-  </main>
+    <!-- Authority Login Page -->
+    <div id="authority-login-page" class="page hidden">
+        <div class="page-content">
+            <div class="container">
+                <div class="login-container">
+                    <div class="login-card">
+                        <div class="login-header">
+                            <div class="login-logo">
+                                <i class="fas fa-shield-alt"></i>
+                            </div>
+                            <h2>Authority Login</h2>
+                            <p>Access the authority dashboard to manage reports</p>
+                        </div>
+                        
+                        <form id="authorityLoginForm">
+                            <div class="form-group">
+                                <label for="authEmail">Email Address</label>
+                                <input type="email" id="authEmail" class="form-control" required placeholder="authority@mangrovewatch.com">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="authPassword">Password</label>
+                                <div class="password-input">
+                                    <input type="password" id="authPassword" class="form-control" required placeholder="Enter your password">
+                                    <button type="button" class="password-toggle" onclick="togglePassword()">
+                                        <i class="fas fa-eye" id="passwordIcon"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary" style="width: 100%;">
+                                <i class="fas fa-sign-in-alt"></i>Login to Dashboard
+                            </button>
+                        </form>
+                        
+                        <div class="login-help">
+                            <p>Demo Credentials:</p>
+                            <ul class="demo-creds">
+                                <li>• Email: admin@mangrovewatch.com</li>
+                                <li>• Password: admin123</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-  <footer class="footer">
-    <div>© <span id="year"></span> Mangrove Watch • Ahmedabad Coastal Circle</div>
-    <div><a href="authority.html">Authority Console</a> • <a target="_blank" href="https://www.openstreetmap.org/copyright">Map © OpenStreetMap</a></div>
-  </footer>
+    <!-- Authority Dashboard Page -->
+    <div id="authority-page" class="page hidden">
+        <div class="page-content">
+            <div class="container">
+                <div class="authority-header">
+                    <h2 class="section-title">Authority Dashboard</h2>
+                    <button class="btn btn-outline" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i>Logout
+                    </button>
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <div class="stat-value" id="pendingReports">0</div>
+                        <div class="stat-title">Pending Reports</div>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-search"></i>
+                        <div class="stat-value" id="investigating">0</div>
+                        <div class="stat-title">Under Investigation</div>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-check-circle"></i>
+                        <div class="stat-value" id="resolved">0</div>
+                        <div class="stat-title">Resolved</div>
+                    </div>
+                </div>
+                
+                <div class="form-group" style="max-width: 400px; margin: 2rem 0;">
+                    <input type="text" id="searchReports" class="form-control" placeholder="Search reports..." oninput="filterReports()">
+                </div>
+                
+                <div class="table-container">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Reporter</th>
+                                <th>Type</th>
+                                <th>Location</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="authorityTable">
+                            <tr>
+                                <td colspan="7" style="text-align: center; padding: 3rem; color: var(--text-muted);">
+                                    <i class="fas fa-clipboard-list" style="font-size: 3rem; margin-bottom: 1rem; display: block;"></i>
+                                    No reports to review at this time.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
 
-  <!-- Toasts -->
-  <div id="toasts" aria-live="polite" aria-atomic="true"></div>
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-logo">
+                        <i class="fas fa-seedling"></i>
+                        <span>Mangrove Watch</span>
+                    </div>
+                    <p>Protecting coastal ecosystems through community action and environmental monitoring.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul class="footer-links">
+                        <li>• <a href="#" onclick="showPage('report')">Report Incident</a></li>
+                        <li>• <a href="#" onclick="showPage('leaderboard')">Leaderboard</a></li>
+                        <li>• <a href="#" onclick="showPage('myreports')">My Reports</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Contact</h4>
+                    <ul class="footer-links">
+                        <li>• Email: contact@mangrovewatch.com</li>
+                        <li>• Phone: +91-123-456-7890</li>
+                        <li>• Emergency: 911</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; <span id="year">2024</span> Mangrove Watch. All rights reserved. | Built for ecosystem protection.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
 </body>
 </html>
