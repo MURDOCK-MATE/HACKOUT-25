@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en" data-app="mangrove-watch">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mangrove Watch – Authority Console</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css"/>
+
+  <!-- Leaflet -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+  <script defer src="app.js"></script>
+</head>
+<body data-role="authority">
+  <!-- Topbar -->
+  <nav class="topbar">
+    <div class="brand">
+      <div class="brand-icon">🛡️</div>
+      <div>
+        <div class="brand-title">Authority Console</div>
+        <div class="brand-tag">Live alerts • Mapping • Case management</div>
+      </div>
+    </div>
+    <div class="top-actions">
+      <button class="btn ghost" onclick="MW.openCitizen()">Citizen Portal</button>
+      <button class="btn ghost" onclick="MW.exportReports()">Export CSV</button>
+    </div>
+  </nav>
+
+  <main class="shell">
+    <section class="panel">
+      <div class="panel-header row between">
+        <div>
+          <h3>Live Incidents</h3>
+          <p class="muted">New submissions appear instantly. Click a row to focus map.</p>
+        </div>
+        <div class="row gap">
+          <select id="statusFilter" class="chip" onchange="MW.renderAuthority()">
+            <option value="all">All statuses</option>
+            <option value="pending">Pending</option>
+            <option value="acknowledged">Acknowledged</option>
+            <option value="in_progress">In-Progress</option>
+            <option value="resolved">Resolved</option>
+          </select>
+          <input id="searchText" class="chip" placeholder="Search by reporter/type..." oninput="MW.renderAuthority()"/>
+        </div>
+      </div>
+
+      <div id="authorityTable" class="table"></div>
+
+      <div class="panel-subheader">
+        <h4>Map</h4>
+      </div>
+      <div id="mapAuthority" class="map"></div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div>© <span id="year"></span> Mangrove Watch • Internal Use</div>
+    <div><a href="index.html">Citizen Portal</a></div>
+  </footer>
+
+  <!-- Toasts -->
+  <div id="toasts" aria-live="polite" aria-atomic="true"></div>
+</body>
+</html>

@@ -1,0 +1,155 @@
+/* ============ Mangrove Watch Design System ============ */
+:root{
+  --bg:#0f1b17;
+  --panel:#12221d;
+  --surface:#163029;
+  --ink:#e6fff5;
+  --muted:#a6c8bc;
+  --brand:#27c29d;
+  --brand-2:#8ef0d1;
+  --accent:#63d471;
+  --warn:#ffb02e;
+  --danger:#ff5d5d;
+  --ok:#25d366;
+  --shadow: 0 20px 60px rgba(0,0,0,.35);
+}
+
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  font-family:'Inter',system-ui,Arial,Helvetica,sans-serif;
+  background: radial-gradient(1200px 800px at 20% -10%, #184235 0%, transparent 60%), var(--bg);
+  color:var(--ink);
+  letter-spacing:.2px;
+}
+a{color:var(--brand)}
+
+.topbar{
+  position:sticky; top:0; z-index:50;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:14px 20px;
+  background:rgba(18,34,29,.7);
+  backdrop-filter: blur(10px);
+  border-bottom:1px solid rgba(142,240,209,.15);
+}
+
+.brand{display:flex; align-items:center; gap:12px}
+.brand-icon{font-size:28px}
+.brand-title{font-family:'Playfair Display',serif; font-size:20px; font-weight:800}
+.brand-tag{font-size:12px; color:var(--muted)}
+
+.hero{
+  display:grid; grid-template-columns:1.2fr 1fr; gap:20px; align-items:center;
+  padding:60px 20px 20px;
+}
+.hero-content h2{
+  font-family:'Playfair Display',serif;
+  font-size:42px; line-height:1.1; margin:0 0 8px;
+}
+.hero-content .accent{background:linear-gradient(90deg,var(--brand),var(--brand-2)); -webkit-background-clip:text; -webkit-text-fill-color:transparent}
+.hero-content p{color:var(--muted); max-width:60ch}
+.hero-cta{display:flex; gap:12px; margin-top:18px}
+
+.hero-canvas{
+  height:240px; border-radius:18px; background:
+  radial-gradient(80px 60px at 25% 30%, rgba(142,240,209,.25), transparent 60%),
+  linear-gradient(140deg, #0c1a16, #12221d);
+  box-shadow: var(--shadow);
+  position:relative; overflow:hidden;
+}
+
+/* Loader */
+#loader{
+  position:fixed; inset:0; display:grid; place-items:center;
+  background: radial-gradient(1000px 800px at 50% -10%, rgba(99,212,113,.15) 0%, transparent 50%), #0b1713;
+  transition:opacity .6s ease, transform .6s ease;
+}
+.loader-wrap{text-align:center}
+.loader-title{font-family:'Playfair Display',serif; font-size:28px; letter-spacing:.3px; margin:14px 0 6px}
+.loader-subtitle{color:var(--muted); font-size:14px}
+.orb{position:relative; width:140px; height:140px; margin:auto; perspective:800px}
+.ring{position:absolute; inset:0; border-radius:50%; border:2px solid rgba(142,240,209,.15); animation:spin 5s linear infinite}
+.r1{transform: rotateX(60deg)}
+.r2{transform: rotateY(60deg)}
+.r3{transform: rotateX(60deg) rotateY(60deg)}
+.seedling svg{width:120px; height:120px; position:absolute; inset:0; margin:auto}
+.sprout-stem{stroke:var(--brand); stroke-width:6; fill:none; stroke-linecap:round}
+.sprout-leaf-l,.sprout-leaf-r{fill:rgba(99,212,113,.6);}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* Shell & Panels */
+.shell{max-width:1100px; margin:0 auto; padding:20px}
+.panel{background:linear-gradient(180deg,rgba(18,34,29,.9),rgba(18,34,29,.7)); border:1px solid rgba(142,240,209,.12); border-radius:16px; padding:18px 18px 22px; box-shadow:var(--shadow); margin:18px 0}
+.panel-header h3{margin:0; font-size:22px}
+.panel-header .muted{color:var(--muted); margin-top:6px}
+.panel-subheader h4{margin:10px 0}
+
+/* Forms */
+.field{display:flex; flex-direction:column; gap:8px}
+.field-inline{display:grid; grid-template-columns:42px 1fr; gap:8px; align-items:center}
+label{font-size:13px; color:var(--muted)}
+input, select, textarea{
+  background:var(--surface); color:var(--ink);
+  border:1px solid rgba(142,240,209,.15); border-radius:10px; padding:10px 12px; outline:none;
+}
+textarea{resize:vertical}
+.grid-2{display:grid; grid-template-columns:1fr 1fr; gap:16px}
+.col-span-2{grid-column:1 / -1}
+.actions{display:flex; gap:10px; margin-top:6px}
+
+/* Buttons */
+.btn{border:none; background:var(--surface); color:var(--ink); border-radius:12px; padding:10px 14px; cursor:pointer; transition:.2s transform ease, .2s box-shadow ease; box-shadow:0 10px 22px rgba(0,0,0,.2)}
+.btn:hover{transform:translateY(-1px)}
+.btn.primary{background:linear-gradient(90deg,var(--brand),var(--accent)); color:#04251f; font-weight:700}
+.btn.outline{background:transparent; border:1px solid rgba(142,240,209,.2)}
+.btn.ghost{background:rgba(22,48,41,.6)}
+.btn.flat{background:transparent; border:1px dashed rgba(142,240,209,.25); color:var(--muted)}
+
+/* Map */
+.map{height:300px; border-radius:14px; overflow:hidden; border:1px solid rgba(142,240,209,.15)}
+
+/* Cards & Table */
+.cards{display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:14px}
+.card{background:var(--surface); border:1px solid rgba(142,240,209,.12); border-radius:12px; padding:12px}
+.badge{display:inline-flex; align-items:center; gap:6px; padding:4px 8px; border-radius:999px; font-size:12px; background:#143d30}
+.badge.pending{background:#342616; color:#ffd888}
+.badge.ack{background:#123b33; color:#77f1cb}
+.badge.progress{background:#1a2a4a; color:#95c6ff}
+.badge.resolved{background:#17361c; color:#7df59e}
+.report-actions{display:flex; gap:8px; margin-top:8px}
+.table{width:100%; overflow:auto; border:1px solid rgba(142,240,209,.12); border-radius:10px}
+.table table{width:100%; border-collapse:collapse}
+.table th,.table td{padding:10px 12px; border-bottom:1px solid rgba(142,240,209,.08); text-align:left; font-size:14px}
+.table tr:hover{background:rgba(142,240,209,.06)}
+
+/* Photo preview */
+.photo-preview{display:flex; gap:8px; flex-wrap:wrap; margin-top:6px}
+.photo-preview img{max-height:80px; border-radius:8px; border:1px solid rgba(142,240,209,.2)}
+
+/* Chips / small UI */
+.row{display:flex; align-items:center; gap:8px}
+.row.between{justify-content:space-between}
+.row.gap{gap:10px}
+.small{font-size:12px}
+.muted{color:var(--muted)}
+
+/* Steps */
+.steps{margin:0; padding-left:18px; color:var(--muted)}
+
+/* Footer */
+.footer{padding:20px; color:var(--muted); display:flex; justify-content:space-between; align-items:center}
+
+/* Toasts */
+#toasts{position:fixed; right:14px; bottom:14px; display:flex; flex-direction:column; gap:10px; z-index:1000}
+.toast{background:#0f1b17; border:1px solid rgba(142,240,209,.2); padding:10px 12px; border-radius:10px; box-shadow:var(--shadow)}
+.toast.success{border-color:rgba(39,194,157,.45)}
+.toast.warn{border-color:rgba(255,176,46,.45)}
+.toast.error{border-color:rgba(255,93,93,.45)}
+
+/* Utility */
+.hidden{display:none}
+@media (max-width: 880px){
+  .grid-2{grid-template-columns:1fr}
+  .hero{grid-template-columns:1fr; gap:10px}
+}

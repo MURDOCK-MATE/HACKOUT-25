@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en" data-app="mangrove-watch">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mangrove Watch – Report & Protect</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css"/>
+
+  <!-- Leaflet -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+  <script defer src="app.js"></script>
+</head>
+<body data-role="citizen">
+  <!-- 3D Loader -->
+  <div id="loader" aria-hidden="true">
+    <div class="loader-wrap">
+      <div class="orb">
+        <div class="ring r1"></div>
+        <div class="ring r2"></div>
+        <div class="ring r3"></div>
+        <div class="seedling">
+          <svg viewBox="0 0 120 120" aria-label="Mangrove sprout">
+            <path d="M60 85 C60 65, 60 55, 60 40" class="sprout-stem"/>
+            <path d="M60 62 C40 52, 38 38, 48 30 C55 24, 65 26, 69 36 C72 44, 66 56, 60 62Z" class="sprout-leaf-l"/>
+            <path d="M60 62 C80 52, 82 38, 72 30 C65 24, 55 26, 51 36 C48 44, 54 56, 60 62Z" class="sprout-leaf-r"/>
+          </svg>
+        </div>
+      </div>
+      <h1 class="loader-title">Mangrove Watch</h1>
+      <p class="loader-subtitle">Crowd-powered protection for coastal ecosystems</p>
+    </div>
+  </div>
+
+  <!-- Topbar -->
+  <nav class="topbar">
+    <div class="brand">
+      <div class="brand-icon">🪴</div>
+      <div>
+        <div class="brand-title">Mangrove Watch</div>
+        <div class="brand-tag">Report • Verify • Act</div>
+      </div>
+    </div>
+    <div class="top-actions">
+      <button id="btnOpenAuthority" class="btn ghost" onclick="MW.openAuthority()">Authority Console</button>
+      <button id="btnMyReports" class="btn ghost" onclick="MW.scrollTo('#myReports')">My Reports</button>
+      <button id="btnLeaderboard" class="btn ghost" onclick="MW.scrollTo('#leaderboard')">Leaderboard</button>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <header class="hero">
+    <div class="hero-content">
+      <h2><span class="accent">Protect</span> Mangroves with your camera.</h2>
+      <p>See illegal cutting, dumping, or fire? Submit a geotagged report with a photo and description. Your report notifies authorities instantly and earns you points on the community leaderboard.</p>
+      <div class="hero-cta">
+        <a href="#report" class="btn primary">Report Incident</a>
+        <a href="#learn" class="btn flat">Learn how it works</a>
+      </div>
+    </div>
+    <div id="heroCanvas" class="hero-canvas" aria-hidden="true"></div>
+  </header>
+
+  <!-- Report Form -->
+  <main id="report" class="shell">
+    <section class="panel">
+      <div class="panel-header">
+        <h3>Submit a Report</h3>
+        <p class="muted">All fields help us validate and act faster. Photos are strongly recommended.</p>
+      </div>
+
+      <form id="reportForm" class="grid-2" autocomplete="on">
+        <div class="field">
+          <label for="reporterName">Your name (for leaderboard)</label>
+          <input id="reporterName" name="reporterName" placeholder="e.g., Dhruv Patel" required/>
+        </div>
+
+        <div class="field">
+          <label for="incidentType">Incident type</label>
+          <select id="incidentType" name="incidentType" required>
+            <option value="">Select one</option>
+            <option>Illegal cutting</option>
+            <option>Solid waste dumping</option>
+            <option>Sewage / chemical discharge</option>
+            <option>Fire / burning</option>
+            <option>Encroachment / land filling</option>
+            <option>Other</option>
+          </select>
+        </div>
+
+        <div class="field col-span-2">
+          <label for="description">Short description</label>
+          <textarea id="description" name="description" rows="3" placeholder="What happened? Any identifying details..." required></textarea>
+        </div>
+
+        <div class="field">
+          <label for="photo">Photo evidence</label>
+          <input id="photo" name="photo" type="file" accept="image/*;capture=camera"/>
+          <small class="muted">EXIF data (if present) is ignored in this demo.</small>
+          <div id="photoPreview" class="photo-preview"></div>
+        </div>
+
+        <div class="field">
+          <label>Location</label>
+          <div class="stack-s">
+            <input id="locationText" placeholder="Type a place (village, creek, landmark)"/>
+            <div class="row">
+              <button type="button" class="btn" onclick="MW.useGeocoding()">Convert to coordinates</button>
+              <button type="button" class="btn outline" onclick="MW.useMyLocation()">Use my current location</button>
+            </div>
+            <div class="row small">
+              <div class="field-inline"><label>Lat</label><input id="lat" inputmode="decimal" placeholder="--" required/></div>
+              <div class="field-inline"><label>Lng</label><input id="lng" inputmode="decimal" placeholder="--" required/></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="field col-span-2">
+          <label>Map (draggable marker)</label>
+          <div id="map" class="map"></div>
+        </div>
+
+        <div class="actions col-span-2">
+          <button class="btn primary" type="submit">Submit Report</button>
+          <button class="btn ghost" type="reset">Reset</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- My Reports -->
+    <section id="myReports" class="panel">
+      <div class="panel-header">
+        <h3>My Reports</h3>
+        <p class="muted">Track statuses in real time as the authority updates cases.</p>
+      </div>
+      <div id="myReportsList" class="cards"></div>
+    </section>
+
+    <!-- Leaderboard -->
+    <section id="leaderboard" class="panel">
+      <div class="panel-header">
+        <h3>Community Leaderboard</h3>
+        <p class="muted">Earn 10 pts per report, +5 with photo, +5 if your report leads to action.</p>
+      </div>
+      <div id="leaderboardList" class="table"></div>
+    </section>
+
+    <!-- How it works -->
+    <section id="learn" class="panel">
+      <div class="panel-header">
+        <h3>How it Works</h3>
+      </div>
+      <ol class="steps">
+        <li><strong>Report:</strong> Submit photo, details, and exact location.</li>
+        <li><strong>Validate:</strong> Automated checks + authority verification reduce false alarms.</li>
+        <li><strong>Act:</strong> Authority assigns and updates status: Acknowledged → In-Progress → Resolved.</li>
+        <li><strong>Reward:</strong> Your score increases as your reports help protect mangroves.</li>
+      </ol>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div>© <span id="year"></span> Mangrove Watch • Ahmedabad Coastal Circle</div>
+    <div><a href="authority.html">Authority Console</a> • <a target="_blank" href="https://www.openstreetmap.org/copyright">Map © OpenStreetMap</a></div>
+  </footer>
+
+  <!-- Toasts -->
+  <div id="toasts" aria-live="polite" aria-atomic="true"></div>
+</body>
+</html>
